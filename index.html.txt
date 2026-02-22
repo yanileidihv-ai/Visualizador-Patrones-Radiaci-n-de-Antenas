@@ -1,0 +1,397 @@
+﻿<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Visualizador interactivo de patrones de radiación de antenas. Simula dipolos, monopolos, arreglos Yagi y más. Herramienta educativa para ingeniería de RF.">
+  <meta name="keywords" content="antena, radiación, patrón polar, dipolo, Yagi, RF, ingeniería, telecomunicaciones">
+  <meta name="author" content="Ing. Yanileidi Hechavarria Vaillant">
+  <meta name="robots" content="index, follow">
+  <meta name="theme-color" content="#020810">
+  <meta property="og:title" content="Visualizador de Patrones de Radiación de Antenas">
+  <meta property="og:description" content="Simulador profesional de patrones de radiación de antenas – Ing. Yanileidi Hechavarria Vaillant">
+  <meta property="og:type" content="website">
+  <title>Visualizador de Patrones de Radiación | Ing. Yanileidi Hechavarria Vaillant</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=Exo+2:wght@300;400;600;700;900&display=swap" rel="stylesheet">
+  
+  <!-- Enlace al archivo CSS externo -->
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <a href="#main-content" class="skip-link">Saltar al contenido principal</a>
+
+  <!-- ===== NAVBAR ===== -->
+  <header>
+    <nav class="navbar" aria-label="Navegación principal">
+      <a href="#hero" class="navbar__brand" aria-label="Inicio — Visualizador de Patrones de Radiación">
+        <svg class="navbar__logo" viewBox="0 0 38 38" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+          <circle cx="19" cy="19" r="17.5" stroke="#00e5ff" stroke-width="0.8" opacity="0.25"/>
+          <circle cx="19" cy="19" r="12" stroke="#00e5ff" stroke-width="0.8" opacity="0.45"/>
+          <circle cx="19" cy="19" r="6.5" stroke="#00e5ff" stroke-width="1.2" opacity="0.75"/>
+          <circle cx="19" cy="19" r="2" fill="#00e5ff" opacity="0.9"/>
+          <line x1="19" y1="1" x2="19" y2="12" stroke="#2979ff" stroke-width="1.8"/>
+          <line x1="19" y1="26" x2="19" y2="37" stroke="#2979ff" stroke-width="0.6" opacity="0.35"/>
+          <line x1="1" y1="19" x2="12" y2="19" stroke="#2979ff" stroke-width="0.6" opacity="0.35"/>
+          <line x1="26" y1="19" x2="37" y2="19" stroke="#2979ff" stroke-width="0.6" opacity="0.35"/>
+          <line x1="6.1" y1="6.1" x2="13.5" y2="13.5" stroke="#2979ff" stroke-width="0.5" opacity="0.2"/>
+          <line x1="24.5" y1="24.5" x2="31.9" y2="31.9" stroke="#2979ff" stroke-width="0.5" opacity="0.2"/>
+        </svg>
+        <div class="navbar__titles">
+          <span class="navbar__name">Visualizador de Patrones de Radiación</span>
+          <span class="navbar__sub">Ing. Yanileidi Hechavarria Vaillant</span>
+        </div>
+      </a>
+
+      <button class="navbar__hamburger" id="hamburger" aria-label="Abrir menú" aria-expanded="false" aria-controls="nav-menu" type="button">☰</button>
+
+      <ul class="navbar__nav" id="nav-menu" role="list">
+        <!-- Tipos de antena – Dropdown -->
+        <li class="nav-item" role="listitem">
+          <button class="nav-link" type="button" aria-haspopup="true" aria-expanded="false" id="dd-toggle-antenas">
+            Antenas <span class="nav-link__arrow" aria-hidden="true">▾</span>
+          </button>
+          <div class="dropdown" role="menu" aria-labelledby="dd-toggle-antenas">
+            <div class="dropdown__header">Seleccionar tipo</div>
+            <button class="dropdown__item dropdown__item--active" role="menuitem" data-nav-type="dipole" type="button">
+              <span class="dropdown__icon">⊣⊢</span>
+              Dipolo
+              <span class="dropdown__badge">λ/2</span>
+            </button>
+            <button class="dropdown__item" role="menuitem" data-nav-type="monopole" type="button">
+              <span class="dropdown__icon">⊣</span>
+              Monopolo
+              <span class="dropdown__badge">λ/4</span>
+            </button>
+            <button class="dropdown__item" role="menuitem" data-nav-type="array" type="button">
+              <span class="dropdown__icon">⊟⊟</span>
+              Arreglo 2E
+              <span class="dropdown__badge">Array</span>
+            </button>
+            <button class="dropdown__item" role="menuitem" data-nav-type="yagi" type="button">
+              <span class="dropdown__icon">⊣⊢⊢⊢</span>
+              Yagi-Uda
+              <span class="dropdown__badge">Dir.</span>
+            </button>
+            <div class="dropdown__divider"></div>
+            <div class="dropdown__header">Herramientas</div>
+            <button class="dropdown__item" role="menuitem" id="dd-screenshot" type="button">
+              <span class="dropdown__icon">📷</span>
+              Capturar imagen
+            </button>
+          </div>
+        </li>
+
+        <!-- Visualización – Dropdown -->
+        <li class="nav-item" role="listitem">
+          <button class="nav-link" type="button" aria-haspopup="true" aria-expanded="false" id="dd-toggle-viz">
+            Visualización <span class="nav-link__arrow" aria-hidden="true">▾</span>
+          </button>
+          <div class="dropdown" role="menu" aria-labelledby="dd-toggle-viz">
+            <div class="dropdown__header">Modo de visualización</div>
+            <button class="dropdown__item" role="menuitem" data-display-mode="dbi" type="button">
+              <span class="dropdown__icon">📡</span>
+              Ganancia dBi
+            </button>
+            <button class="dropdown__item" role="menuitem" data-display-mode="power" type="button">
+              <span class="dropdown__icon">⚡</span>
+              Densidad de Potencia
+            </button>
+            <button class="dropdown__item" role="menuitem" data-display-mode="linear" type="button">
+              <span class="dropdown__icon">📈</span>
+              Escala Lineal
+            </button>
+            <div class="dropdown__divider"></div>
+            <div class="dropdown__header">Secciones</div>
+            <a href="#sec-2d" class="dropdown__item" role="menuitem">
+              <span class="dropdown__icon">🔵</span>Patrones 2D Polares
+            </a>
+            <a href="#sec-3d" class="dropdown__item" role="menuitem">
+              <span class="dropdown__icon">🌐</span>Patrón 3D Interactivo
+            </a>
+            <a href="#sec-info" class="dropdown__item" role="menuitem">
+              <span class="dropdown__icon">📖</span>Información Técnica
+            </a>
+          </div>
+        </li>
+
+        <!-- Link directo -->
+        <li role="listitem">
+          <a href="#sec-info" class="nav-link">Conceptos</a>
+        </li>
+      </ul>
+
+      <div class="navbar__right">
+        <span class="badge badge--v">v3.1.0</span>
+        <span class="badge badge--live">● En vivo</span>
+      </div>
+    </nav>
+  </header>
+
+  <!-- ===== MAIN APP ===== -->
+  <div class="app" id="main-content">
+
+    <!-- SIDEBAR -->
+    <aside class="sidebar" aria-label="Panel de control de antena">
+
+      <section class="ctrl-section">
+        <h2 class="ctrl-title">Tipo de Antena</h2>
+        <div class="ant-grid" role="radiogroup" aria-label="Tipo de antena">
+          <button class="ant-btn ant-btn--active" data-type="dipole" aria-pressed="true" type="button">
+            <span class="ant-btn__icon" aria-hidden="true">⊣⊢</span>Dipolo
+          </button>
+          <button class="ant-btn" data-type="monopole" aria-pressed="false" type="button">
+            <span class="ant-btn__icon" aria-hidden="true">⊣</span>Monopolo
+          </button>
+          <button class="ant-btn" data-type="array" aria-pressed="false" type="button">
+            <span class="ant-btn__icon" aria-hidden="true">⊟⊟</span>Arreglo 2E
+          </button>
+          <button class="ant-btn" data-type="yagi" aria-pressed="false" type="button">
+            <span class="ant-btn__icon" aria-hidden="true">⊣⊢⊢⊢</span>Yagi
+          </button>
+        </div>
+      </section>
+
+      <section class="ctrl-section" aria-live="polite" aria-atomic="true">
+        <h2 class="ctrl-title">Parámetros</h2>
+
+        <div id="params-dipole" class="param-group param-group--visible">
+          <div class="field">
+            <div class="field__label">
+              <label for="dipole-length" class="field__name">Longitud (L/λ)</label>
+              <output class="field__val" for="dipole-length" id="val-dipole-length">0.50</output>
+            </div>
+            <input type="range" id="dipole-length" min="0.1" max="1.5" step="0.05" value="0.5" aria-describedby="dipole-help">
+            <small id="dipole-help" class="visually-hidden">Rango 0.1 a 1.5 longitudes de onda</small>
+          </div>
+        </div>
+
+        <div id="params-monopole" class="param-group">
+          <div class="field">
+            <div class="field__label">
+              <label for="monopole-length" class="field__name">Longitud (L/λ)</label>
+              <output class="field__val" for="monopole-length" id="val-monopole-length">0.25</output>
+            </div>
+            <input type="range" id="monopole-length" min="0.05" max="0.75" step="0.05" value="0.25">
+          </div>
+          <div class="field">
+            <div class="field__label">
+              <label for="monopole-tilt" class="field__name">Ángulo de tilt (°)</label>
+              <output class="field__val" for="monopole-tilt" id="val-monopole-tilt">0</output>
+            </div>
+            <input type="range" id="monopole-tilt" min="0" max="30" step="1" value="0">
+          </div>
+        </div>
+
+        <div id="params-array" class="param-group">
+          <div class="field">
+            <div class="field__label">
+              <label for="array-spacing" class="field__name">Separación (d/λ)</label>
+              <output class="field__val" for="array-spacing" id="val-array-spacing">0.50</output>
+            </div>
+            <input type="range" id="array-spacing" min="0.1" max="1.5" step="0.05" value="0.5">
+          </div>
+          <div class="field">
+            <div class="field__label">
+              <label for="array-phase" class="field__name">Fase (°)</label>
+              <output class="field__val" for="array-phase" id="val-array-phase">0</output>
+            </div>
+            <input type="range" id="array-phase" min="-180" max="180" step="5" value="0">
+          </div>
+        </div>
+
+        <div id="params-yagi" class="param-group">
+          <div class="field">
+            <div class="field__label">
+              <label for="yagi-directors" class="field__name">Directores</label>
+              <output class="field__val" for="yagi-directors" id="val-yagi-directors">3</output>
+            </div>
+            <input type="range" id="yagi-directors" min="1" max="8" step="1" value="3">
+          </div>
+          <div class="field">
+            <div class="field__label">
+              <label for="yagi-spacing" class="field__name">Espaciado (d/λ)</label>
+              <output class="field__val" for="yagi-spacing" id="val-yagi-spacing">0.35</output>
+            </div>
+            <input type="range" id="yagi-spacing" min="0.2" max="0.5" step="0.05" value="0.35">
+          </div>
+        </div>
+      </section>
+
+      <section class="ctrl-section">
+        <h2 class="ctrl-title">Modo de Visualización</h2>
+        <div class="radio-group" role="radiogroup" aria-label="Modo de visualización">
+          <div class="radio-group__opt">
+            <input type="radio" name="display-mode" id="mode-dbi" class="radio-group__inp" value="dbi" checked>
+            <label for="mode-dbi" class="radio-group__lbl">dBi</label>
+          </div>
+          <div class="radio-group__opt">
+            <input type="radio" name="display-mode" id="mode-power" class="radio-group__inp" value="power">
+            <label for="mode-power" class="radio-group__lbl">Potencia</label>
+          </div>
+          <div class="radio-group__opt">
+            <input type="radio" name="display-mode" id="mode-linear" class="radio-group__inp" value="linear">
+            <label for="mode-linear" class="radio-group__lbl">Lineal</label>
+          </div>
+        </div>
+      </section>
+
+      <section class="ctrl-section" aria-live="polite">
+        <h2 class="ctrl-title">Parámetros Calculados</h2>
+        <div class="results-grid">
+          <article class="res-card">
+            <h3 class="res-card__lbl">Ganancia</h3>
+            <p class="res-card__val" id="res-gain">2.15</p>
+            <span class="res-card__unit">dBi</span>
+          </article>
+          <article class="res-card">
+            <h3 class="res-card__lbl">HPBW Az</h3>
+            <p class="res-card__val" id="res-hpbw-az">78°</p>
+            <span class="res-card__unit">Azimut</span>
+          </article>
+          <article class="res-card">
+            <h3 class="res-card__lbl">HPBW El</h3>
+            <p class="res-card__val" id="res-hpbw-el">78°</p>
+            <span class="res-card__unit">Elevación</span>
+          </article>
+          <article class="res-card">
+            <h3 class="res-card__lbl">F/B Ratio</h3>
+            <p class="res-card__val" id="res-fb">0.0</p>
+            <span class="res-card__unit">dB</span>
+          </article>
+        </div>
+      </section>
+
+      <button class="btn btn--primary" id="btn-screenshot" type="button">
+        <svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+          <path d="M21 6h-3.17L16 4H8L6.17 6H3c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h18c1.1 0 2-.9 2-2V8c0-1.1-.9-2-2-2zm-9 11c-2.76 0-5-2.24-5-5s2.24-5 5-5 5 2.24 5 5-2.24 5-5 5z"/>
+        </svg>
+        Capturar Imagen
+      </button>
+    </aside>
+
+    <!-- CONTENT -->
+    <div class="content">
+
+      <!-- 2D Plots -->
+      <div class="viz-grid section-anchor" id="sec-2d">
+        <article class="viz-card">
+          <header class="viz-card__head">
+            <h2 class="viz-card__title">Patrón 2D Polar</h2>
+            <span class="viz-card__tag">Plano H · Azimut</span>
+          </header>
+          <div class="viz-card__body">
+            <canvas id="canvas-azimut" width="280" height="280"
+              role="img" aria-label="Patrón polar de radiación plano horizontal"></canvas>
+          </div>
+          <div class="legend"><span>MIN</span><div class="legend__bar"></div><span>MAX</span></div>
+        </article>
+
+        <article class="viz-card">
+          <header class="viz-card__head">
+            <h2 class="viz-card__title">Patrón 2D Polar</h2>
+            <span class="viz-card__tag">Plano E · Elevación</span>
+          </header>
+          <div class="viz-card__body">
+            <canvas id="canvas-elevation" width="280" height="280"
+              role="img" aria-label="Patrón polar de radiación plano vertical"></canvas>
+          </div>
+          <div class="legend"><span>MIN</span><div class="legend__bar"></div><span>MAX</span></div>
+        </article>
+      </div>
+
+      <!-- 3D Plot -->
+      <article class="viz-card section-anchor" id="sec-3d">
+        <header class="viz-card__head">
+          <h2 class="viz-card__title">Patrón 3D Interactivo — Rotación con Ratón</h2>
+          <span class="viz-card__tag">Espacio 3D</span>
+        </header>
+        <div class="viz-card__body" style="min-height:380px; padding:10px;">
+          <div class="canvas-3d-wrap" id="wrap3d">
+            <canvas id="canvas-3d" width="760" height="380"
+              role="img" aria-label="Representación 3D interactiva del patrón de radiación"></canvas>
+            <div class="drag-hint">
+              <span class="drag-hint__icon">🖱️</span>
+              Arrastrar para rotar · Rueda para zoom
+            </div>
+          </div>
+        </div>
+        <div class="view3d-controls">
+          <button class="view3d-btn view3d-btn--active" data-preset="iso" type="button">Isométrico</button>
+          <button class="view3d-btn" data-preset="top" type="button">Superior</button>
+          <button class="view3d-btn" data-preset="front" type="button">Frontal</button>
+          <button class="view3d-btn" data-preset="side" type="button">Lateral</button>
+          <button class="view3d-btn" data-preset="reset" type="button">↺ Reiniciar</button>
+        </div>
+        <div class="legend" style="margin-top:4px;"><span>−30dB</span><div class="legend__bar"></div><span>0dB</span></div>
+      </article>
+
+    </div><!-- /.content -->
+  </div><!-- /.app -->
+
+  <!-- FOOTER -->
+  <footer class="footer section-anchor" id="sec-info">
+    <div class="footer__grid">
+      <section>
+        <h2 class="footer__head">Conceptos Clave</h2>
+        <p class="footer__text">
+          El patrón de radiación describe la distribución angular de potencia irradiada por una antena.
+          La ganancia directiva mide la concentración de energía en una dirección comparada con una antena isotrópica ideal.
+        </p>
+        <div class="tags">
+          <span class="tag">HPBW</span>
+          <span class="tag">dBi</span>
+          <span class="tag">F/B Ratio</span>
+          <span class="tag">Lóbulos</span>
+          <span class="tag">Directividad</span>
+          <span class="tag">Polarización</span>
+        </div>
+      </section>
+
+      <section>
+        <h2 class="footer__head">Tipos de Antena</h2>
+        <p class="footer__text">
+          <strong style="color:var(--text)">Dipolo λ/2:</strong> Antena de referencia, G=2.15 dBi, patrón omnidireccional en azimut con nulos en los extremos del eje.<br><br>
+          <strong style="color:var(--text)">Yagi-Uda:</strong> Alta directividad mediante directores y reflector, usada en TV, radioenlaces y comunicaciones punto a punto.
+        </p>
+      </section>
+
+      <section>
+        <h2 class="footer__head">Recursos Adicionales</h2>
+        <nav aria-label="Recursos externos" class="footer__links">
+          <a href="https://www.antenna-theory.com/" class="footer__link" target="_blank" rel="noopener noreferrer">Antenna Theory Online</a>
+          <a href="https://www.itu.int/rec/R-REC-P/en" class="footer__link" target="_blank" rel="noopener noreferrer">ITU Recomendaciones</a>
+          <a href="https://www.arrl.org/antenna-design" class="footer__link" target="_blank" rel="noopener noreferrer">ARRL Antenna Design</a>
+          <a href="https://optics.synopsys.com/rsoft/" class="footer__link" target="_blank" rel="noopener noreferrer">Simuladores EM</a>
+        </nav>
+
+        <!-- CREATOR CARD -->
+        <div class="creator-card" style="margin-top:20px;">
+          <div class="creator-card__avatar" aria-hidden="true">👩‍💻</div>
+          <div>
+            <div class="creator-card__name">Ing. Yanileidi Hechavarria Vaillant</div>
+            <div class="creator-card__role">Diseñadora y Desarrolladora · Ingeniería de Telecomunicaciones</div>
+          </div>
+        </div>
+      </section>
+    </div>
+
+    <div class="footer__bottom">
+      <p class="footer__copy">
+        © 2025 Ing. Yanileidi Hechavarria Vaillant — Visualizador de Patrones de Radiación de Antenas v3.1.0
+      </p>
+      <div class="footer__badges">
+        <span class="badge badge--v">WCAG 2.1 AA</span>
+        <span class="badge badge--v">ES2022+</span>
+        <span class="badge badge--v">MIT</span>
+      </div>
+    </div>
+  </footer>
+
+  <!-- Enlace al archivo JavaScript externo -->
+  <script src="app.js"></script>
+</body>
+</html>
+
